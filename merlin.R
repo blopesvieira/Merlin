@@ -1,3 +1,6 @@
+# Library
+if(!require(DiagrammeR)) cat("Warning: missing DiagrammeR library. Some graphical capabilities are disabled. To install the required library run 'install.packages(\"DiagrammeR\")'.")
+
 # Definitions
 imp <- "->"
 or <- "|"
@@ -29,12 +32,12 @@ setDataCenters <- function(n=1, data=0) {
 	print(paste("Creating", n, "data center(s)"))
 	for(i in 1:n) {
 		places[length(places)+1] <<- paste0("d", i)
-		tokens[length(tokens)+1] <<- data
+		tokens[length(tokens)+1] <<- data[i]
 	}
 }
 
-setMemmory <- function(n=1) {
-	print(paste("Creating", n, "shared memmory(ies)"))
+setMemory <- function(n=1) {
+	print(paste("Creating", n, "shared memory(ies)"))
 	for(i in 1:n) {
 		places[length(places)+1] <<- paste0("m", i)
 		tokens[length(tokens)+1] <<- 1
@@ -52,7 +55,7 @@ collect <- function(agent, from=1, freq=1, shared) {
 	else {
 		mem <- pmatch(paste0("m",shared), places)
 		if(is.na(mem)) {
-			setMemmory(n=shared)
+			setMemory(n=shared)
 			mem <- length(places)
 		}
 		transitions[[length(transitions)+1]] <<- c(2, rCenter, mem, agent, freq)
@@ -85,6 +88,8 @@ toDot <- function() {
 	}
 	return(paste0(dotGraph, "\n}"))
 }
+
+plotPN <- function() grViz(diagram=toDot())
 
 setResource <- function(where, amount=1) {
 	if(missing(where)) stop("Missing place to set")
